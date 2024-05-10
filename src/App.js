@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React from 'react';
+import Nav from "./Navbar.js";
+import SmallWithSocial from "./BottomNav.js";
+import SearchForm from "./SearchForm.js";
+import { useState } from 'react';
+import Pagination from './Pagination.js';
+import Cards from './Card.js';
+import { Box } from '@chakra-ui/react';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box pb="220px"> {/* Adjust the padding as needed */}
+      <Nav/>
+      <SearchForm></SearchForm>
+      <Cards></Cards>
+      <Cards></Cards>
+      <Cards></Cards>
+      <Cards></Cards>
+      <Cards></Cards>
+      <Cards></Cards>
+      <Cards></Cards>
+      <Pagination currentPage={currentPage} onPageChange={handlePageChange} />
+      <SmallWithSocial/>
+    </Box>
   );
 }
 

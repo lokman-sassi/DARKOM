@@ -1,0 +1,20 @@
+.animation-container {
+    opacity: 0;
+    animation: fadeIn 2s ease forwards;
+  }
+
+/* Add padding to the bottom of the page to create space for the BottomNav */
+body {
+  padding-bottom: 560px; /* Adjust the value as needed */
+}
+
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
