@@ -1,6 +1,6 @@
+// BottomNav.js
 import { Box, chakra, Container, Stack, Text, useColorModeValue, VisuallyHidden } from '@chakra-ui/react'
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
-import { useEffect, useState } from 'react';
 
 const SocialButton = ({
   children,
@@ -30,33 +30,12 @@ const SocialButton = ({
 }
 
 export default function BottomNav() {
-  const [showBottomNav, setShowBottomNav] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.body.scrollHeight;
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const distanceFromBottom = documentHeight - (scrollTop + windowHeight);
-
-      // Set showBottomNav to true if the user has scrolled to the bottom of the page
-      setShowBottomNav(distanceFromBottom < 50); // Adjust the threshold as needed
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}
-      position="fixed"
-      bottom="0"
-      left="0"
       width="100%"
       zIndex="1000"
-      display={showBottomNav ? 'block' : 'none'}
     >
       <Container
         as={Stack}

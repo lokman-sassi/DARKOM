@@ -1,44 +1,141 @@
-import { Card, Image, Stack, Heading, Text, Button, CardBody, CardFooter, Flex } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Image, Icon, Stack, Heading, Text, Button, Flex, IconButton, CardBody, CardFooter, Card, useColorModeValue } from '@chakra-ui/react';
+import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from 'react-icons/fa';
 
-function Cards() {
-    return (
-        <Flex justify="center" align="center" minHeight="50vh">
-            <Card
-                direction={{ base: 'column', sm: 'row' }}
-                overflow='hidden'
-                variant='outline'
-                maxWidth="800px"
-            >
-                <Image
-                    objectFit='cover'
-                    maxW={{ base: '100%', sm: '200px' }}
-                    src='https://www.algeriahome.com/oc-content/uploads/344/153200.jpg'
-                    alt='Caffe Latte'
-                />
 
-                <Stack>
-                    <CardBody>
-                        <Heading size='md'>Logement à vendre Souk Ahras</Heading>
-                        <Text py='2'>
-                           Price: 673440624.00 DZD
-                           <br/>
-                           Location:  نهج دريسي عبد العزيز10, Souk Ahras, Souk Ahras, Algeria 
-                           <br/>
-                           Date: Avril 28, 2024
-                           <br/>
-                           Surface: 152 m2
-                        </Text>
-                    </CardBody>
+function CardItem({ listing }) {
+  const [isFavorite, setIsFavorite] = useState(false); // Local state to manage favorite status
 
-                    <CardFooter>
-                        <a href='https://www.algeriahome.com/a-vendre/maison-appartement-a-vendre/logement-a-vendre-souk-ahras_i34475' target='_blank' rel="noopener noreferrer">
-                        <Button type="button" variant='solid' colorScheme='blue'>Details</Button>
-                        </a>
-                    </CardFooter>
-                </Stack>
-            </Card>
-        </Flex>
+  // Function to handle the favorite toggle
+  const handleFavoriteToggle = () => {
+    setIsFavorite(!isFavorite);
+    // Here you can also update the favorites in your backend or local storage
+  };
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Function to handle missing data about the price
+  const formatPrice = (price) => {
+    const unspecifiedPrices = ["Demandez le prix au vendeur", "Gratuit", null];
+    return unspecifiedPrices.includes(price) ? "Not mentioned" : price;
+  };
+
+  // Function to go to the next image
+  const nextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === listing.Images.length - 1 ? 0 : prevIndex + 1
     );
+  };
+
+  // Function to go to the previous image
+  const prevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? listing.Images.length - 1 : prevIndex - 1
+    );
+  };
+
+  return (
+    <Flex justify="center" align="center" minHeight="50vh" p={4}>
+      <Card
+        direction={{ base: 'column', sm: 'row' }}
+        boxShadow='2xl'
+        overflow='hidden'
+        variant='outline'
+        minH="300px"
+        w="800px"
+        h="300px"
+        position="relative"
+        bg={useColorModeValue('white', 'gray.900')}
+        borderRadius="lg"
+        transition="transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out"
+        _hover={{
+          transform: 'scale(1.05)',
+          boxShadow: '4xl',
+        }}
+      >
+        {/* Carousel container */}
+        <Flex>
+          {listing.Images && Array.isArray(listing.Images) && listing.Images.length > 0 ? (
+            <>
+              <IconButton
+                aria-label="Previous image"
+                icon={<FaArrowAltCircleLeft />}
+                position="absolute"
+                left="0"
+                top="50%"
+                transform="translateY(-50%)"
+                onClick={prevImage}
+                zIndex="1"
+              />
+              <Image
+                objectFit='cover'
+                boxSize="300px"
+                src={listing.Images[currentImageIndex]}
+                alt={`Listing Image ${currentImageIndex + 1}`}
+              />
+              <IconButton
+                aria-label="Next image"
+                icon={<FaArrowAltCircleRight />}
+                position="absolute"
+                right="499"
+                top="50%"
+                transform="translateY(-50%)"
+                onClick={nextImage}
+                zIndex="1"
+              />
+            </>
+          ) : (
+            <Image
+              objectFit='cover'
+              boxSize="300px"
+              src="./no-image.jpg"
+              alt='No Image Available'
+            />
+          )}
+        </Flex>
+
+        {/* Card content */}
+        <Stack>
+        <CardBody>
+            <Heading size='md'>{listing.Title}</Heading>
+            <Text py='2'>
+              Price: {formatPrice(listing.Price)}
+              <br />
+              Location: {listing.Location}
+              <br />
+              Source: {listing.Source}
+              <br />
+              Date: {listing.Date || "Not mentioned"}
+              <br />
+              Surface: {listing.Surface || "Not mentioned"}
+
+            </Text>
+          </CardBody>
+
+          <CardFooter>
+            <a href={listing.Link} target='_blank' rel="noopener noreferrer">
+              <Button type="button" variant='outline' colorScheme='green'>Details</Button>
+            </a>
+            <IconButton
+              aria-label="Add to favorites"
+              icon={<Icon viewBox="0 0 24 24">
+                <path
+                  fill={isFavorite ? "red" : "none"}
+                  stroke="red"
+                  strokeWidth="2"
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                />
+              </Icon>}
+              colorScheme={isFavorite ? 'red' : 'none'}
+              _hover={{ bg: "gray.100" }}
+              onClick={handleFavoriteToggle}
+              variant="ghost"
+              ml={4}
+            />
+          </CardFooter>
+        </Stack>
+      </Card>
+    </Flex>
+  );
 }
 
-export default Cards;
+export default CardItem;
