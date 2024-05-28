@@ -30,15 +30,25 @@ function Auth() {
   };
 
   const handleForgotPassword = () => {
-    // Here you would typically handle sending a password reset email
-    // For now, we'll just display a success message
-    toast({
-      title: "Password reset link sent!",
-      description: "Check your email for the password reset link.",
-      status: "info",
-      duration: 3000,
-      isClosable: true,
-    });
+    if (!formData.email) {
+      toast({
+        title: "Error",
+        description: "Please enter your email address.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      // Here you would typically handle sending a password reset email
+      // For now, we'll just display a success message
+      toast({
+        title: "Password reset link sent!",
+        description: "Check your email for the password reset link.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const bg = useColorModeValue('white', 'gray.700');
