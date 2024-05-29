@@ -19,7 +19,7 @@ function App() {
     const fetchListings = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:8000/listings?page=${currentPage}`);
+        const response = await fetch(`http://localhost:8000/api/listings?page=${currentPage}`); //localhost  before for local test, device IP address for local network test
         const data = await response.json();
         setListings(data.listings);
         setTotalPages(data.totalPages);

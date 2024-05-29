@@ -1,42 +1,41 @@
-import admin, { findOne } from '..modelsadmin';
+// import admin from './model';
+const user = require('./model');
 
-// eslint-disable-next-line no-undef
-const jwt = require(jsonwebtoken);
 
-class AdminServices {
+const jwt = require('jsonwebtoken');
 
-    static async registerAdmin(email, mot_de_passe, nom, prenom, telephone, wilaya, photo) {
+class UserServices {
+
+    // Create a new user    
+    static async registerUser(email, password, first_name, last_name, picture) {
         try {
-            // eslint-disable-next-line no-undef
-            console.log(email,Password, email, mot_de_passe, nom, prenom, telephone, wilaya, photo);
+            console.log(email, password, first_name, last_name, picture);
 
-            const createAdmin = new admin({ email, mot_de_passe, nom, prenom, telephone, wilaya, photo });
-            return await createAdmin.save();
+            const createUser = new user({ email, password, first_name, last_name, picture });
+            return await createUser.save();
         } catch (err) {
             throw err;
         }
     }
 
-    static async getAdminByEmail(email) {
+    static async getUserByEmail(email) {
         try {
-            return await findOne({ email });
+            return await user.findOne({ email });
         } catch (err) {
             console.log(err);
         }
     }
 
-    static async checkAdmin(email) {
+    static async checkUser(email) {
         try {
-            return await findOne({ email });
+            return await user.findOne({ email });
         } catch (error) {
             throw error;
         }
     }
 
-    static async generateAccessToken(tokenData, JWT_EXPIRE) {
-        // eslint-disable-next-line no-undef
-        return jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn, JWT_EXPIRE });
+    static async generateAccessToken(tokenData) {
+        return jwt.sign(tokenData, "lokman");
     }
 }
-
-export default AdminServices;
+module.exports= UserServices;

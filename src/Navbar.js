@@ -26,7 +26,9 @@ export default function Nav() {
 
         {/* Center-aligned item */}
         <Flex justify="center" align="center" flex="1">
-          <Image src="./darkom1-removebg.png" alt="DARKOM logo" h='66px' w='100px'/>
+          <Link to="/">
+             <Image src="./darkom1-removebg.png" alt="DARKOM logo" h='66px' w='100px'/>
+          </Link>
         </Flex>
 
         {/* Right-aligned items */}

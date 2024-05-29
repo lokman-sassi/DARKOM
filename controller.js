@@ -1,24 +1,26 @@
-/* eslint-disable no-undef */
-export async function createAdmin(req, res, next) {
+// import UserServices from "./service";
+const UserServices = require("./service")
+
+exports.createUser=async(req, res, next)=> {
     try {
         console.log("---req body---", req.body);
-        const { email, mot_de_passe, nom, prenom, telephone, wilaya, photo } = req.body;
-        const duplicate = await AdminServices.getAdminByEmail(email);
+        const { email, password, first_name, last_name, picture } = req.body;
+        const duplicate = await UserServices.getUserByEmail(email);
         if (duplicate) {
             // throw new Error(`this ${email}, Already Registered`)
-            return res.status(400).json({ status: false, message: `L'email ${email} est déjà enregistré` });
+            return res.status(400).json({ status: false, message: `Email ${email} already registred` });
         }
 
-        const admin = await AdminServices.registerAdmin(email, mot_de_passe, nom, prenom, telephone, wilaya, photo);
+        const user = await UserServices.registerUser(email, password, first_name, last_name, picture);
 
         let tokenData;
-        tokenData = { _id: admin._id, email: email, role: "admin" };
+        tokenData = { _id: user._id, email: email, role: "user" };
 
 
-        const token = await AdminServices.generateAccessToken(tokenData, "365d")
+        const token = await UserServices.generateAccessToken(tokenData, "365d")
 
 
-        res.json({ status: true, message: 'Admin enregistré avec succès', token: token, id: admin._id, data: admin });
+        res.json({ status: true, message: 'User registred succefully', token: token, id: user._id, data: user });
 
 
     } catch (err) {
@@ -27,24 +29,24 @@ export async function createAdmin(req, res, next) {
     }
 }
 //----------------------------
-export async function loginAdmin(req, res, next) {
+exports.loginUser=async(req, res, next)=> {
     try {
-        const { email, mot_de_passe } = req.body;
-        if (!email || !mot_de_passe) {
-            return res.status(400).json({ status: false, message: 'Les paramètres ne sont pas corrects' });
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ status: false, message: 'The parameters are incorrect' });
         }
-        let admin = await AdminServices.checkAdmin(email);
-        if (!admin) {
-            return res.status(404).json({ status: false, message: 'L\'administrateur n\'existe pas' });
+        let user = await UserServices.checkUser(email);
+        if (!user) {
+            return res.status(404).json({ status: false, message: 'User doesn\'t exist' });
         }
-        const isMot_de_passeCorrect = await admin.compareMot_de_passe(mot_de_passe);
-        if (isMot_de_passeCorrect === false) {
-            return res.status(401).json({ status: false, message: 'Le nom d\'administrateur ou le mot de passe ne correspond pas' });
+        const isPasswordCorrect = await user.compareMot_de_passe(password);
+        if (isPasswordCorrect === false) {
+            return res.status(401).json({ status: false, message: 'Email or password inccorrect' });
         }
         let tokenData;
-        tokenData = { _id: admin._id, email: admin.email, role: "admin" };
-        const token = await AdminServices.generateAccessToken(tokenData, "365d")
-        res.status(200).json({ status: true, success: "Bien connecté", token: token, data: admin });
+        tokenData = { _id: user._id, email: user.email, role: "user" };
+        const token = await UserServices.generateAccessToken(tokenData, "365d")
+        res.status(200).json({ status: true, success: "Succefully connected", token: token, data: user });
     } catch (error) {
         console.log(error, 'err---->');
         next(error);

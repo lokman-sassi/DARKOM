@@ -1,14 +1,15 @@
+// import { Schema, model } from 'mongoose';
+// import { genSalt, hash as _hash, compare } from "bcrypt";
 const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
-const ObjectId = mongoose.Types.ObjectId;
 
 
-const adminSchema = new mongoose.Schema({
-    nom: {
+const UserSchema = new mongoose.Schema({
+    first_name: {
         type: String,
         required: true
     },
-    prenom: {
+    last_name: {
         type: String,
         required: true
     },
@@ -17,52 +18,39 @@ const adminSchema = new mongoose.Schema({
         required: true
 
     },
-    telephone: {
-        type: Number,
-        require: true
-    },
-    mot_de_passe: {
+    password: {
         type: String,
         required: true
     },
-    wilaya: {
-        type: String,
-        required: true
-    },
-    photo: {
+    picture: {
         type: String,
         // required: true
     },
  
 
-}, {
-    toJSON: {
-        transform: function (doc, ret) {
-            delete ret.mot_de_passe;
-        }
-    }
 }, { timestamps: true })
 
 // Pre-save hook to hash password
-adminSchema.pre("save", async function () {
+UserSchema.pre("save", async function () {
     
-    var admin = this;
-    if (!admin.isModified("mot_de_passe")) {
+    var user = this;
+    if (!user.isModified("password")) {
         return;
     }
     try {
         const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(admin.mot_de_passe, salt);
-        admin.mot_de_passe = hash;
+
+        const hash = await bcrypt.hash(user.password, salt);
+        user.password = hash;
     } catch (err) {
         throw err;
     }
 });
 
 // Method to compare passwords during sign -in
-adminSchema.methods.compareMot_de_passe = async function (candidateMot_de_passe) {
+UserSchema.methods.compareMot_de_passe = async function (candidateMot_de_passe) {
     try {
-        const isMatch = await bcrypt.compare(candidateMot_de_passe, this.mot_de_passe);
+        const isMatch = await bcrypt.compare(candidateMot_de_passe, this.password);
         return isMatch;
     } catch (error) {
         throw error;
@@ -70,6 +58,5 @@ adminSchema.methods.compareMot_de_passe = async function (candidateMot_de_passe)
 };
 
 
-
-const Admin = mongoose.model('Admin', adminSchema);
-module.exports = Admin;
+const User = mongoose.model('User', UserSchema);
+module.exports= User;
