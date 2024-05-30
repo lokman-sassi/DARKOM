@@ -1,13 +1,11 @@
-// import express from 'express';
-// import { createUser, loginUser } from './controller.js';
-const express =require("express")
-const userController = require("./controller")
-const dataController=require('./dateController')
+import express from 'express';
+import { createUser, loginUser } from './controller.js';
+import { fetchData } from './dateController.js';
+
 const router = express.Router();
 
+router.post('/signup', createUser);
+router.post('/login', loginUser);
+router.get('/listings', fetchData);
 
-router.post('/signup',userController.createUser);
-router.post('/login', userController.loginUser);
-router.get('/listings',dataController.fetchData)
-
-module.exports=router;
+export default router;

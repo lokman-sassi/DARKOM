@@ -1,7 +1,7 @@
 // import UserServices from "./service";
-const UserServices = require("./service")
+import UserServices from "./service.js";
 
-exports.createUser=async(req, res, next)=> {
+export async function createUser(req, res, next) {
     try {
         console.log("---req body---", req.body);
         const { email, password, first_name, last_name, picture } = req.body;
@@ -29,7 +29,7 @@ exports.createUser=async(req, res, next)=> {
     }
 }
 //----------------------------
-exports.loginUser=async(req, res, next)=> {
+export async function loginUser(req, res, next) {
     try {
         const { email, password } = req.body;
         if (!email || !password) {

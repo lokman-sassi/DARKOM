@@ -1,10 +1,12 @@
 // import { Schema, model } from 'mongoose';
 // import { genSalt, hash as _hash, compare } from "bcrypt";
-const mongoose = require('mongoose');
-const bcrypt = require("bcrypt");
+import { Schema, model } from 'mongoose';
+import { genSalt, hash as _hash, compare } from "bcrypt";
 
 
-const UserSchema = new mongoose.Schema({
+
+
+const UserSchema = new Schema({
     first_name: {
         type: String,
         required: true
@@ -25,8 +27,7 @@ const UserSchema = new mongoose.Schema({
     picture: {
         type: String,
         // required: true
-    },
- 
+    }
 
 }, { timestamps: true })
 
@@ -38,9 +39,9 @@ UserSchema.pre("save", async function () {
         return;
     }
     try {
-        const salt = await bcrypt.genSalt(10);
+        const salt = await genSalt(10);
 
-        const hash = await bcrypt.hash(user.password, salt);
+        const hash = await _hash(user.password, salt);
         user.password = hash;
     } catch (err) {
         throw err;
@@ -50,7 +51,7 @@ UserSchema.pre("save", async function () {
 // Method to compare passwords during sign -in
 UserSchema.methods.compareMot_de_passe = async function (candidateMot_de_passe) {
     try {
-        const isMatch = await bcrypt.compare(candidateMot_de_passe, this.password);
+        const isMatch = await compare(candidateMot_de_passe, this.password);
         return isMatch;
     } catch (error) {
         throw error;
@@ -58,5 +59,5 @@ UserSchema.methods.compareMot_de_passe = async function (candidateMot_de_passe) 
 };
 
 
-const User = mongoose.model('User', UserSchema);
-module.exports= User;
+const User = model('User', UserSchema);
+export default User;

@@ -2,10 +2,10 @@
 // import mongoose from "mongoose"; 
 // import cors from "cors"; 
 
-const express = require("express");
-const mongoose= require("mongoose") 
-const cors = require("cors")
-const apiRouter=require('./routes')
+import express, { json } from "express";
+import { connect } from "mongoose"; 
+import cors from "cors";
+import apiRouter from './routes.js';
 const app = express();
 const PORT = 8000;
 
@@ -13,7 +13,7 @@ const PORT = 8000;
 app.use(cors());
 
 
-mongoose.connect('mongodb://localhost:27017/Real-Estate')
+connect('mongodb://localhost:27017/Real-Estate')
     .then(() => {
         console.log("Connection established");
     })
@@ -22,7 +22,7 @@ mongoose.connect('mongodb://localhost:27017/Real-Estate')
     });
 
 
-app.use(express.json());
+app.use(json());
 app.use('/api',apiRouter);
 
 // app.get('/listings',

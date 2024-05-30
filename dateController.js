@@ -1,13 +1,13 @@
 // import UserServices from "./service";
-const mongoose= require("mongoose") 
-
-exports.fetchData=async (req,res,next)=>{
+import pkg from "mongoose"; 
+const { connection } = pkg;
+export async function fetchData(req,res,next){
     const page = parseInt(req.query.page) || 1; 
     const limit = 15; 
     const skip = (page - 1) * limit; 
 
     try {
-        const collection = mongoose.connection.db.collection('RealEstateListing');
+        const collection = connection.db.collection('RealEstateListing');
         
         const listings = await collection.find({}, {
             projection: {

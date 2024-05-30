@@ -1,10 +1,37 @@
 // Navbar.js
 import { Box, Flex, Image, Button, useColorMode, useColorModeValue, Text } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkToken = () => {
+      const token = localStorage.getItem('token');
+      setIsAuthenticated(!!token);
+    };
+
+    // Check token in local storage on mount and whenever local storage changes
+    checkToken();
+    window.addEventListener('storage', checkToken);
+
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('storage', checkToken);
+    };
+  }, []);
+
+  const logout = () => {
+    console.log('Logout function called'); // Add this line
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    navigate('/'); // Redirect to home page
+    window.location.reload(); // Force a refresh of the page
+  };
   return (
     <Box
       bg={useColorModeValue('white', 'gray.800')}
@@ -33,20 +60,29 @@ export default function Nav() {
 
         {/* Right-aligned items */}
         <Flex align="center" justify="flex-end" flex="1">
-          <NavItem label="My Account" to="/account" />
-          <NavItem label="My Favorites" />
-          <Button onClick={toggleColorMode}>
-            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-          </Button>
-        </Flex>
+           {isAuthenticated && (
+            <>
+            <NavItem label="Logout" to="/" onClick={logout}/>
+            <NavItem label="My Favorites" to="/favorites" />
+           </>
+         )}  { 
+          !isAuthenticated && (
+            <>
+            <NavItem label="Connect" to="/account" />
+           </>
+         )}
+    <Button onClick={toggleColorMode}>
+      {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+    </Button>
+  </Flex>
       </Flex>
     </Box>
   );
 }
 
-function NavItem({ label, to }) {
+function NavItem({ label, to, onClick }) {
   return (
-    <Link to={to || '#'}>
+    <Link to={to || '#'} onClick={onClick}>
       <Text
         mx={2}
         p={2}

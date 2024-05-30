@@ -1,20 +1,10 @@
+// Auth.js
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Stack,
-  useToast,
-  Heading,
-  Text,
-  Container,
-  SimpleGrid,
-} from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, FormControl, FormLabel, Input, Stack, useToast, Heading, Text, Container, SimpleGrid } from '@chakra-ui/react';
 
 function Auth() {
-  const [isLogin, setIsLogin] = useState(false); // Default to Signup form
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -24,6 +14,7 @@ function Auth() {
   });
 
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,7 +45,6 @@ function Auth() {
       });
       const data = await response.json();
       if (data.status) {
-        // Handle successful authentication
         toast({
           title: 'Success',
           description: data.message,
@@ -63,9 +53,9 @@ function Auth() {
           isClosable: true,
         });
         localStorage.setItem('token', data.token); // Save the token
-        // Redirect to profile or dashboard page
+        navigate('/');
+        window.location.reload(); 
       } else {
-        // Handle errors
         toast({
           title: 'Authentication Error',
           description: data.message,
@@ -85,7 +75,7 @@ function Auth() {
     }
   };
 
-  return (
+return (
     <Container maxW="lg" py={{ base: '12', md: '24' }} px={{ base: '0', sm: '8' }}>
       <Stack spacing="8">
         <Stack spacing="6" align="start">

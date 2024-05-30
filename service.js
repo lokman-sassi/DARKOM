@@ -1,8 +1,11 @@
 // import admin from './model';
-const user = require('./model');
 
 
-const jwt = require('jsonwebtoken');
+import  pkg  from 'jsonwebtoken';
+import user from './model.js';
+
+const { sign } = pkg;
+// Remove the unused import statement for 'findOne' from './model.js'
 
 class UserServices {
 
@@ -17,7 +20,6 @@ class UserServices {
             throw err;
         }
     }
-
     static async getUserByEmail(email) {
         try {
             return await user.findOne({ email });
@@ -25,7 +27,6 @@ class UserServices {
             console.log(err);
         }
     }
-
     static async checkUser(email) {
         try {
             return await user.findOne({ email });
@@ -35,7 +36,7 @@ class UserServices {
     }
 
     static async generateAccessToken(tokenData) {
-        return jwt.sign(tokenData, "lokman");
+        return sign(tokenData, "lokman");
     }
 }
-module.exports= UserServices;
+export default UserServices;
