@@ -32,6 +32,7 @@ export default function Nav() {
     navigate('/'); // Redirect to home page
     window.location.reload(); // Force a refresh of the page
   };
+
   return (
     <Box
       bg={useColorModeValue('white', 'gray.800')}
@@ -54,27 +55,27 @@ export default function Nav() {
         {/* Center-aligned item */}
         <Flex justify="center" align="center" flex="1">
           <Link to="/">
-             <Image src="./darkom1-removebg.png" alt="DARKOM logo" h='66px' w='100px'/>
+            <Image src="./darkom1-removebg.png" alt="DARKOM logo" h='66px' w='100px'/>
           </Link>
         </Flex>
 
         {/* Right-aligned items */}
         <Flex align="center" justify="flex-end" flex="1">
-           {isAuthenticated && (
+          {isAuthenticated && (
             <>
-            <NavItem label="Logout" to="/" onClick={logout}/>
-            <NavItem label="My Favorites" to="/favorites" />
-           </>
-         )}  { 
-          !isAuthenticated && (
+              <NavItem label="Logout" to="/" onClick={logout} />
+              <NavItem label="My Favorites" to="/favorites" />
+            </>
+          )}
+          {!isAuthenticated && (
             <>
-            <NavItem label="Connect" to="/account" />
-           </>
-         )}
-    <Button onClick={toggleColorMode}>
-      {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-    </Button>
-  </Flex>
+              <NavItem label="Connect" to="/account" />
+            </>
+          )}
+          <Button onClick={toggleColorMode}>
+            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          </Button>
+        </Flex>
       </Flex>
     </Box>
   );

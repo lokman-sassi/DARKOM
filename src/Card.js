@@ -1,21 +1,48 @@
 import React, { useState } from 'react';
 import { Image, Icon, Stack, Heading, Text, Button, Flex, IconButton, CardBody, CardFooter, Card, useColorModeValue } from '@chakra-ui/react';
 import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+
 
 
 function CardItem({ listing }) {
   const [isFavorite, setIsFavorite] = useState(false); // Local state to manage favorite status
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const navigate = useNavigate();
+
 
   // Function to handle the favorite toggle
-  const handleFavoriteToggle = () => {
-    setIsFavorite(!isFavorite);
-    // Here you can also update the favorites in your backend or local storage
+  const handleFavoriteToggle = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/account'); // Redirect to login page if not authenticated
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://localhost:8000/api/favorite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ listingId: listing._id }),
+      });
+  
+      if (response.ok) {
+        setIsFavorite(!isFavorite);
+      } else {
+        console.error('Failed to toggle favorite');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
 
   // Function to handle missing data about the price
   const formatPrice = (price) => {
-    const unspecifiedPrices = ["Demandez le prix au vendeur", "Gratuit", null];
+    const unspecifiedPrices = ["Demandez le prix au vendeur                  ", "Gratuit                  ", null];
     return unspecifiedPrices.includes(price) ? "Not mentioned" : price;
   };
 
@@ -54,7 +81,7 @@ function CardItem({ listing }) {
       >
         {/* Carousel container */}
         <Flex>
-          {listing.Images && Array.isArray(listing.Images) && listing.Images.length > 0 ? (
+          {listing.Images[0] !== "No images were found" ? (
             <>
               <IconButton
                 aria-label="Previous image"

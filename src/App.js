@@ -8,6 +8,8 @@ import Pagination from './Pagination.js';
 import CardItem from './Card.js';
 import { Box, Spinner, Center } from '@chakra-ui/react';
 import Auth from './Auth.js';
+import Favorites from './Favorites.js';
+
 function App() {
   const [listings, setListings] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -60,6 +62,7 @@ function App() {
             </>
           } />
           <Route path="/account" element={<Auth />} />
+          <Route path="/favorites" element={<Favorites />} />
         </Routes>
         <BottomNav />
       </Box>

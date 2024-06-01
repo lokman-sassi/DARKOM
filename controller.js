@@ -1,4 +1,3 @@
-// import UserServices from "./service";
 import UserServices from "./service.js";
 
 export async function createUser(req, res, next) {
@@ -12,11 +11,8 @@ export async function createUser(req, res, next) {
         }
 
         const user = await UserServices.registerUser(email, password, first_name, last_name, picture);
-
-        let tokenData;
-        tokenData = { _id: user._id, email: email, role: "user" };
-
-
+        //let tokenData;
+        const tokenData = { _id: user._id, email: email, role: "user" };
         const token = await UserServices.generateAccessToken(tokenData, "365d")
 
 
@@ -43,12 +39,14 @@ export async function loginUser(req, res, next) {
         if (isPasswordCorrect === false) {
             return res.status(401).json({ status: false, message: 'Email or password inccorrect' });
         }
-        let tokenData;
-        tokenData = { _id: user._id, email: user.email, role: "user" };
+        //let tokenData;
+        const tokenData = { _id: user._id, email: user.email, role: "user" };
         const token = await UserServices.generateAccessToken(tokenData, "365d")
+        
         res.status(200).json({ status: true, success: "Succefully connected", token: token, data: user });
     } catch (error) {
         console.log(error, 'err---->');
         next(error);
     }
 }
+  

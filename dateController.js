@@ -1,34 +1,38 @@
-// import UserServices from "./service";
-import pkg from "mongoose"; 
-const { connection } = pkg;
+import RealEstateListing from "./listings.js";
+//import pkg from "mongoose"; 
+//const { connection } = pkg;
+
+
 export async function fetchData(req,res,next){
     const page = parseInt(req.query.page) || 1; 
     const limit = 15; 
     const skip = (page - 1) * limit; 
 
     try {
-        const collection = connection.db.collection('RealEstateListing');
+        //const collection = connection.db.collection('RealEstateListing');
         
-        const listings = await collection.find({}, {
-            projection: {
-                _id: 0,
-                Title: 1,
-                Price: 1,
-                Location: 1,
-                Images: 1,
-                Source: 1,
-                Date: 1,
-                Link: 1,
-                Surface: 1,
-            }
-        })
+        const listings = await RealEstateListing.find(
+        //     {}, {
+        //     projection: {
+        //         _id: 1,
+        //         Title: 1,
+        //         Price: 1,
+        //         Location: 1,
+        //         Images: 1,
+        //         Source: 1,
+        //         Date: 1,
+        //         Link: 1,
+        //         Surface: 1,
+        //     }
+        // }
+    )
         .skip(skip) 
         .limit(limit) 
-        .toArray();
+        /*.toArray()*/;
 
         console.log(listings.length)
 
-        const totalListings = await collection.countDocuments();
+        const totalListings = await RealEstateListing.countDocuments();
         const totalPages = Math.ceil(totalListings / limit);
 
         res.setHeader('Content-Type', 'application/json');

@@ -1,9 +1,7 @@
-// import { Schema, model } from 'mongoose';
-// import { genSalt, hash as _hash, compare } from "bcrypt";
-import { Schema, model } from 'mongoose';
+import mongoose from "mongoose";
+import { Schema } from 'mongoose';
 import { genSalt, hash as _hash, compare } from "bcrypt";
-
-
+const ObjectId = mongoose.Types.ObjectId;
 
 
 const UserSchema = new Schema({
@@ -27,8 +25,11 @@ const UserSchema = new Schema({
     picture: {
         type: String,
         // required: true
-    }
-
+    },
+    favorites: [{
+        type: ObjectId,
+        ref: 'RealEstateListing'
+      }]      
 }, { timestamps: true })
 
 // Pre-save hook to hash password
@@ -59,5 +60,5 @@ UserSchema.methods.compareMot_de_passe = async function (candidateMot_de_passe) 
 };
 
 
-const User = model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
 export default User;

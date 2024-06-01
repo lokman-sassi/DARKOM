@@ -1,7 +1,3 @@
-// import express from "express";
-// import mongoose from "mongoose"; 
-// import cors from "cors"; 
-
 import express, { json } from "express";
 import { connect } from "mongoose"; 
 import cors from "cors";
@@ -25,8 +21,6 @@ connect('mongodb://localhost:27017/Real-Estate')
 app.use(json());
 app.use('/api',apiRouter);
 
-// app.get('/listings',
-// )
 
 
 // Starting the server
