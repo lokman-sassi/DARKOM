@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Image, Icon, Stack, Heading, Text, Button, Flex, IconButton, CardBody, CardFooter, Card, useColorModeValue } from '@chakra-ui/react';
-import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from 'react-icons/fa';
+//import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { FaBed, FaMapMarkerAlt, FaDollarSign, FaRegCalendarAlt, FaRulerCombined, FaTag, FaLink } from 'react-icons/fa'; 
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+
 
 
 
@@ -42,7 +45,7 @@ function CardItem({ listing }) {
 
   // Function to handle missing data about the price
   const formatPrice = (price) => {
-    const unspecifiedPrices = ["Demandez le prix au vendeur                  ", "Gratuit                  ", null];
+    const unspecifiedPrices = ["Demandez le prix au vendeur                  ", "Gratuit                  ", "FREE", null];
     return unspecifiedPrices.includes(price) ? "Not mentioned" : price;
   };
 
@@ -60,6 +63,13 @@ function CardItem({ listing }) {
     );
   };
 
+  const formatDate = (date) => {
+    if (date && date.includes('T')) {
+      return date.split('T')[0];
+    }
+    return date || "Not mentioned";
+  };
+
   return (
     <Flex justify="center" align="center" minHeight="50vh" p={4}>
       <Card
@@ -69,7 +79,7 @@ function CardItem({ listing }) {
         variant='outline'
         minH="300px"
         w="800px"
-        h="300px"
+        h="400px"
         position="relative"
         bg={useColorModeValue('white', 'gray.900')}
         borderRadius="lg"
@@ -80,62 +90,89 @@ function CardItem({ listing }) {
         }}
       >
         {/* Carousel container */}
-        <Flex>
+        <Flex position="relative">
           {listing.Images[0] !== "No images were found" ? (
             <>
               <IconButton
                 aria-label="Previous image"
-                icon={<FaArrowAltCircleLeft />}
+                icon={<FaChevronLeft />}
                 position="absolute"
-                left="0"
+                left="2"
                 top="50%"
                 transform="translateY(-50%)"
                 onClick={prevImage}
                 zIndex="1"
+                size="lg"
+                variant="ghost"
+                color="white"
+                _hover={{ bg: 'rgba(0, 0, 0, 0.4)' }}
+                transition="background-color 0.2s"
               />
               <Image
                 objectFit='cover'
-                boxSize="300px"
+                boxSize="400px"
                 src={listing.Images[currentImageIndex]}
                 alt={`Listing Image ${currentImageIndex + 1}`}
               />
               <IconButton
                 aria-label="Next image"
-                icon={<FaArrowAltCircleRight />}
+                icon={<FaChevronRight />}
                 position="absolute"
-                right="499"
+                right="2"
                 top="50%"
                 transform="translateY(-50%)"
                 onClick={nextImage}
                 zIndex="1"
+                size="lg"
+                variant="ghost"
+                color="white"
+                _hover={{ bg: 'rgba(0, 0, 0, 0.4)' }}
+                transition="background-color 0.2s"
               />
             </>
           ) : (
             <Image
               objectFit='cover'
-              boxSize="300px"
+              boxSize="400px"
               src="./no-image.jpg"
               alt='No Image Available'
             />
           )}
         </Flex>
-
         {/* Card content */}
         <Stack>
-        <CardBody>
+          <CardBody>
             <Heading size='md'>{listing.Title}</Heading>
-            <Text py='2'>
-              Price: {formatPrice(listing.Price)}
-              <br />
-              Location: {listing.Location}
-              <br />
-              Source: {listing.Source}
-              <br />
-              Date: {listing.Date || "Not mentioned"}
-              <br />
-              Surface: {listing.Surface || "Not mentioned"}
-
-            </Text>
+            <Flex direction="column" mt={4}>
+              <Flex align="center" mb={2}>
+                <FaTag />
+                <Text ml={2}>{listing.CATEGORY.length > 0 ? listing.CATEGORY.join(', ') : "Not mentioned"}</Text>
+              </Flex>
+              <Flex align="center" mb={2}>
+                <FaDollarSign />
+                <Text ml={2}>{formatPrice(listing.Price)}</Text>
+              </Flex>
+              <Flex align="center" mb={2}>
+                <FaMapMarkerAlt />
+                <Text ml={2}>{listing.Location || listing.LOCATION}</Text>
+              </Flex>
+              <Flex align="center" mb={2}>
+                <FaBed />
+                <Text ml={2}>{listing.ROOMS.length > 0 ? listing.ROOMS.join(', ') : "Not mentioned"}</Text>
+              </Flex>
+              <Flex align="center" mb={2}>
+                <FaLink />
+                <Text ml={2}>{formatPrice(listing.Source)}</Text>
+              </Flex>
+              <Flex align="center" mb={2}>
+                <FaRegCalendarAlt />
+                <Text ml={2}>{formatDate(listing.Date)}</Text>
+              </Flex>
+              <Flex align="center">
+                <FaRulerCombined />
+                <Text ml={2}>{listing.Surface === "0" && listing.SURFACE.length > 0 ? `${listing.SURFACE.join(', ')} m²` : (listing.Surface ? `${listing.Surface}` : "Not mentioned")}</Text>
+              </Flex>
+            </Flex>
           </CardBody>
 
           <CardFooter>

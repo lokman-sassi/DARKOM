@@ -4,42 +4,55 @@ import mongoose from "mongoose";
 const ListingSchema = new Schema({
     Title: {
         type: String,
-        // required: true
     },
     Price: {
         type: String,
-        // required: true
     },
     Location: {
         type: String,
-        // required: true
 
     },
     Description: {
         type: String,
-        // required: true
     },
     Images: [{
         type: String,
-        // // required: true
     }],
     Source: {
         type: String,
-        // required: true
     },
     Date: {
         type: String,
-        // // required: true
     },
     Link: {
         type: String,
-        // required: true
     },
     Category: {
         type: String,
-      }      
+      },
+    CATEGORY: [{
+        type: String,
+    }],   
+    FLOOR: [{
+        type: String,
+    }],  
+    LOCATION: [{
+        type: String,
+    }],       
+    PRICE: [{
+        type: String,
+    }], 
+    ROOMS: [{
+        type: String,
+    }], 
+    SALE_TYPE: [{
+        type: String,
+    }],   
+    SURFACE: [{
+        type: String,
+    }],       
 }, { timestamps: true })
 
 
-const RealEstateListing = mongoose.model('RealEstateListing', ListingSchema);
-export default RealEstateListing;
+const FinalDB = mongoose.model('FinalDB', ListingSchema);
+export default FinalDB;

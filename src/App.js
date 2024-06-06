@@ -15,12 +15,13 @@ function App() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedSaleType, setSelectedSaleType] = useState(null);
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:8000/api/listings?page=${currentPage}`); //localhost  before for local test, device IP address for local network test
+        const response = await fetch(`http://localhost:8000/api/listings?page=${currentPage}`);
         const data = await response.json();
         setListings(data.listings);
         setTotalPages(data.totalPages);
@@ -37,10 +38,18 @@ function App() {
     setCurrentPage(page);
   };
 
+  const handleSaleTypeChange = (saleType) => {
+    setSelectedSaleType(saleType);
+  };
+
+  const filteredListings = selectedSaleType
+  ? listings.filter((listing) => listing['SALE TYPE'] && listing['SALE TYPE'].some((type) => type === selectedSaleType))
+  : listings;
+
   return (
     <Router>
       <Box pt="232px">
-        <Nav />
+        <Nav onSaleTypeChange={handleSaleTypeChange} />
         <Routes>
           <Route path="/" element={
             <>
@@ -51,7 +60,7 @@ function App() {
                 </Center>
               ) : (
                 <>
-                  {listings.map((listing, index) => (
+                  {filteredListings.map((listing, index) => (
                     <CardItem key={index} listing={listing} />
                   ))}
                   <Box mb="20px">

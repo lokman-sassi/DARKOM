@@ -1,4 +1,4 @@
-import RealEstateListing from "./listings.js";
+import FinalDB from "./listings.js";
 //import pkg from "mongoose"; 
 //const { connection } = pkg;
 
@@ -11,7 +11,7 @@ export async function fetchData(req,res,next){
     try {
         //const collection = connection.db.collection('RealEstateListing');
         
-        const listings = await RealEstateListing.find(
+        const listings = await FinalDB.find(
         //     {}, {
         //     projection: {
         //         _id: 1,
@@ -32,7 +32,7 @@ export async function fetchData(req,res,next){
 
         console.log(listings.length)
 
-        const totalListings = await RealEstateListing.countDocuments();
+        const totalListings = await FinalDB.countDocuments();
         const totalPages = Math.ceil(totalListings / limit);
 
         res.setHeader('Content-Type', 'application/json');

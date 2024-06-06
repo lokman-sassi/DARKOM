@@ -24,3 +24,12 @@ export async function toggleFavoriteListing(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
+export async function getFavoriteIDs(req, res){
+  try {
+    const user = await User.findById(req.user._id).select('favorites');
+    res.json({ favoriteIds: user.favorites });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
