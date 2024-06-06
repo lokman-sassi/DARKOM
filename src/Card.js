@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image, Icon, Stack, Heading, Text, Button, Flex, IconButton, CardBody, CardFooter, Card, useColorModeValue } from '@chakra-ui/react';
 //import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { FaBed, FaMapMarkerAlt, FaDollarSign, FaRegCalendarAlt, FaRulerCombined, FaTag, FaLink } from 'react-icons/fa'; 
+import { FaBed, FaMapMarkerAlt, FaDollarSign, FaRegCalendarAlt, FaRulerCombined, FaTag, FaLink, FaBuilding } from 'react-icons/fa'; 
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 
@@ -79,7 +79,7 @@ function CardItem({ listing }) {
         variant='outline'
         minH="300px"
         w="800px"
-        h="400px"
+        h="300px"
         position="relative"
         bg={useColorModeValue('white', 'gray.900')}
         borderRadius="lg"
@@ -133,7 +133,7 @@ function CardItem({ listing }) {
           ) : (
             <Image
               objectFit='cover'
-              boxSize="400px"
+              boxSize="300px"
               src="./no-image.jpg"
               alt='No Image Available'
             />
@@ -141,36 +141,48 @@ function CardItem({ listing }) {
         </Flex>
         {/* Card content */}
         <Stack>
-          <CardBody>
+        <CardBody>
             <Heading size='md'>{listing.Title}</Heading>
             <Flex direction="column" mt={4}>
-              <Flex align="center" mb={2}>
-                <FaTag />
-                <Text ml={2}>{listing.CATEGORY.length > 0 ? listing.CATEGORY.join(', ') : "Not mentioned"}</Text>
+              <Flex justify="space-between" mb={2}>
+                <Flex align="center">
+                  <FaTag />
+                  <Text ml={2}>{listing.CATEGORY.length > 0 ? listing.CATEGORY.join(', ') : "Not mentioned"}</Text>
+                </Flex>
+                <Flex align="center">
+                  <FaDollarSign />
+                  <Text ml={2}>{formatPrice(listing.Price)}</Text>
+                </Flex>
               </Flex>
-              <Flex align="center" mb={2}>
-                <FaDollarSign />
-                <Text ml={2}>{formatPrice(listing.Price)}</Text>
+              <Flex justify="space-between" mb={2}>
+                <Flex align="center">
+                  <FaMapMarkerAlt />
+                  <Text ml={2}>{listing.Location || listing.LOCATION}</Text>
+                </Flex>
+                <Flex align="center">
+                  <FaBed />
+                  <Text ml={2}>{listing.ROOMS.length > 0 ? listing.ROOMS.join(', ') : "Not mentioned"}</Text>
+                </Flex>
               </Flex>
-              <Flex align="center" mb={2}>
-                <FaMapMarkerAlt />
-                <Text ml={2}>{listing.Location || listing.LOCATION}</Text>
+              <Flex justify="space-between" mb={2}>
+                <Flex align="center">
+                  <FaBuilding />
+                  <Text ml={2}>{listing.FLOOR.length > 0 ? `Floor ${listing.FLOOR.join(', ')}` : "Not mentioned"}</Text>
+                </Flex>
+                <Flex align="center">
+                  <FaRulerCombined />
+                  <Text ml={2}>{listing.Surface === "0" && listing.SURFACE.length > 0 ? `${listing.SURFACE.join(', ')} m²` : (listing.Surface ? `${listing.Surface}` : "Not mentioned")}</Text>
+                </Flex>
               </Flex>
-              <Flex align="center" mb={2}>
-                <FaBed />
-                <Text ml={2}>{listing.ROOMS.length > 0 ? listing.ROOMS.join(', ') : "Not mentioned"}</Text>
-              </Flex>
-              <Flex align="center" mb={2}>
-                <FaLink />
-                <Text ml={2}>{formatPrice(listing.Source)}</Text>
-              </Flex>
-              <Flex align="center" mb={2}>
-                <FaRegCalendarAlt />
-                <Text ml={2}>{formatDate(listing.Date)}</Text>
-              </Flex>
-              <Flex align="center">
-                <FaRulerCombined />
-                <Text ml={2}>{listing.Surface === "0" && listing.SURFACE.length > 0 ? `${listing.SURFACE.join(', ')} m²` : (listing.Surface ? `${listing.Surface}` : "Not mentioned")}</Text>
+              <Flex justify="space-between">
+                <Flex align="center">
+                  <FaLink />
+                  <Text ml={2}>{formatPrice(listing.Source)}</Text>
+                </Flex>
+                <Flex align="center">
+                  <FaRegCalendarAlt />
+                  <Text ml={2}>{formatDate(listing.Date)}</Text>
+                </Flex>
               </Flex>
             </Flex>
           </CardBody>
