@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, Icon, Stack, Heading, Text, Button, Flex, IconButton, CardBody, CardFooter, Card, useColorModeValue } from '@chakra-ui/react';
 //import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -6,13 +6,18 @@ import { FaBed, FaMapMarkerAlt, FaDollarSign, FaRegCalendarAlt, FaRulerCombined,
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 
-
-
-function CardItem({ listing }) {
+function CardItem({ listing, favorites = [] }) {
   const [isFavorite, setIsFavorite] = useState(false); // Local state to manage favorite status
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
 
+
+  // Extract the IDs of the favorite listings
+  const favoriteIds = favorites.map(favorite => favorite._id);
+
+  useEffect(() => {
+    setIsFavorite(favoriteIds.includes(listing._id));
+  }, [favoriteIds, listing._id]);
 
   // Function to handle the favorite toggle
   const handleFavoriteToggle = async () => {

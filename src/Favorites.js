@@ -44,8 +44,8 @@ function Favorites() {
     return (
       <>
         {favorites.map((listing, index) => (
-          <CardItem key={index} listing={listing} />
-        ))}
+  <CardItem key={index} listing={listing} favorites={favorites} />
+))}
       </>
     );
   }

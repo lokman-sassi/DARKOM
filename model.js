@@ -28,7 +28,7 @@ const UserSchema = new Schema({
     },
     favorites: [{
         type: ObjectId,
-        ref: 'RealEstateListing'
+        ref: 'FinalDB'
       }]      
 }, { timestamps: true })
 

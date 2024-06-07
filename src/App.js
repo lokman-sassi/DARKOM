@@ -23,6 +23,8 @@ function App() {
   const [selectedSurface, setSelectedSurface] = useState({ min: '', max: '' });
   const [selectedPrice, setSelectedPrice] = useState({ min: '', max: '' });
   const [, setFiltersReset] = useState(false);
+  const [favorites, setFavorites] = useState([]);
+
 
 const resetFilters = () => {
   setSelectedSaleType(null);
@@ -82,6 +84,32 @@ const resetFilters = () => {
 
     fetchListings();
   }, [currentPage, selectedSaleType, selectedLocation, selectedFloor, selectedRooms, selectedCategory, selectedSurface, selectedPrice]);
+
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8000/api/favorites', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        });
+        const data = await response.json();
+        setFavorites(data.favorites || []);
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -147,7 +175,7 @@ const resetFilters = () => {
                 <>
                   {listings.length > 0 ? (
                     listings.map((listing, index) => (
-                      <CardItem key={index} listing={listing} />
+                      <CardItem key={index} listing={listing} favorites={favorites}/>
                     ))
                   ) : (
                     <Center mt="20">
