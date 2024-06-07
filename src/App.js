@@ -20,6 +20,20 @@ function App() {
   const [selectedFloor, setSelectedFloor] = useState('');
   const [selectedRooms, setSelectedRooms] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSurface, setSelectedSurface] = useState({ min: '', max: '' });
+  const [selectedPrice, setSelectedPrice] = useState({ min: '', max: '' });
+  const [, setFiltersReset] = useState(false);
+
+const resetFilters = () => {
+  setSelectedSaleType(null);
+  setSelectedLocation(null);
+  setSelectedFloor('');
+  setSelectedRooms('');
+  setSelectedCategory('');
+  setSelectedSurface({ min: '', max: '' });
+  setSelectedPrice({ min: '', max: '' });
+  setFiltersReset(true);
+};
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -41,18 +55,43 @@ function App() {
         if (selectedCategory) {
           url += `&CATEGORY=${selectedCategory}`;
         }
+        if (selectedSurface.min) {
+          url += `&minSurface=${selectedSurface.min}`;
+        }
+        if (selectedSurface.max) {
+          url += `&maxSurface=${selectedSurface.max}`;
+        }
+        if (selectedPrice.min) {
+          url += `&minPrice=${selectedPrice.min}`;
+        }
+        if (selectedPrice.max) {
+          url += `&maxPrice=${selectedPrice.max}`;
+        }
         const response = await fetch(url);
         const data = await response.json();
-        setListings(data.listings);
-        setTotalPages(data.totalPages);
+        setListings(data.listings || []); // Ensure listings is always an array
+        setTotalPages(data.totalPages || 0); // Ensure totalPages is always a number
         setLoading(false);
       } catch (error) {
         console.error("Error fetching listings:", error);
+        setListings([]); // Set listings to an empty array on error
+        setTotalPages(0); // Set totalPages to 0 on error
+        setLoading(false);
       }
     };
 
     fetchListings();
-  }, [currentPage, selectedSaleType, selectedLocation, selectedFloor, selectedRooms, selectedCategory]);
+  }, [currentPage, selectedSaleType, selectedLocation, selectedFloor, selectedRooms, selectedCategory, selectedSurface, selectedPrice]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSaleTypeChange = (saleType, location) => {
+    setSelectedSaleType(saleType);
+    setSelectedLocation(location);
+    setCurrentPage(1); // Reset to the first page when changing sale type or location
+  };
 
   const handleFloorChange = (floor) => {
     setSelectedFloor(floor);
@@ -63,22 +102,25 @@ function App() {
     setSelectedRooms(rooms);
     setCurrentPage(1); // Reset to the first page when changing rooms
   };
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setCurrentPage(1); // Reset to the first page when changing category
   };
 
-  const handleSaleTypeChange = (saleType, location) => {
-    setSelectedSaleType(saleType);
-    setSelectedLocation(location);
-    setCurrentPage(1); // Reset to the first page when changing sale type or location
-  };
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
     setCurrentPage(1); // Reset to the first page when changing location
   };
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setCurrentPage(1); // Reset to the first page when changing category
+
+  const handleSurfaceChange = (surface) => {
+    setSelectedSurface(surface);
+    setCurrentPage(1); // Reset to the first page when changing surface
+  };
+
+  const handlePriceChange = (price) => {
+    setSelectedPrice(price);
+    setCurrentPage(1); // Reset to the first page when changing price
   };
 
   return (
@@ -93,6 +135,9 @@ function App() {
                 onRoomsChange={handleRoomsChange}
                 onLocationChange={handleLocationChange}
                 onCategoryChange={handleCategoryChange}
+                onSurfaceChange={handleSurfaceChange}
+                onPriceChange={handlePriceChange}
+                resetFilters={resetFilters}
               />
               {loading ? (
                 <Center mt="20">
@@ -100,9 +145,15 @@ function App() {
                 </Center>
               ) : (
                 <>
-                  {listings.map((listing, index) => (
-                    <CardItem key={index} listing={listing} />
-                  ))}
+                  {listings.length > 0 ? (
+                    listings.map((listing, index) => (
+                      <CardItem key={index} listing={listing} />
+                    ))
+                  ) : (
+                    <Center mt="20">
+                      <Box>No listings found</Box>
+                    </Center>
+                  )}
                   <Box mb="20px">
                     <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                   </Box>

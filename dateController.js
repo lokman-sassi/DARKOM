@@ -1,14 +1,10 @@
 import FinalDB from "./listings.js";
-//import pkg from "mongoose"; 
-//const { connection } = pkg;
-
 
 export async function fetchData(req,res,next){
     const page = parseInt(req.query.page) || 1; 
     const limit = 15; 
     const skip = (page - 1) * limit; 
-    // const floor = req.query.floor;
-    // const rooms = req.query.rooms;
+    
     const filters = {};
     if (req.query.FLOOR) filters.FLOOR = req.query.FLOOR;
     if (req.query.ROOMS) filters.ROOMS = req.query.ROOMS;
@@ -17,101 +13,103 @@ export async function fetchData(req,res,next){
     
     
     // Surface filtering
-    if (req.query.minSurface || req.query.maxSurface) {
-        const surfaceConditions = [];
-        if (req.query.minSurface) {
-            surfaceConditions.push({
-                $gte: [
-                    { 
-                        $convert: {
-                            input: "$$surface",
-                            to: "double",
-                            onError: null,
-                            onNull: null
-                        }
-                    },
-                    Number(req.query.minSurface)
-                ]
-            });
-        }
-        if (req.query.maxSurface) {
-            surfaceConditions.push({
-                $lte: [
-                    { 
-                        $convert: {
-                            input: "$$surface",
-                            to: "double",
-                            onError: null,
-                            onNull: null
-                        }
-                    },
-                    Number(req.query.maxSurface)
-                ]
-            });
-        }
-        filters.$expr = {
-            $anyElementTrue: {
-                $map: {
-                    input: "$SURFACE",
-                    as: "surface",
-                    in: {
-                        $and: surfaceConditions
+if (req.query.minSurface || req.query.maxSurface) {
+    const surfaceConditions = [];
+    if (req.query.minSurface) {
+        surfaceConditions.push({
+            $gte: [
+                { 
+                    $convert: {
+                        input: "$$surface",
+                        to: "double",
+                        onError: null,
+                        onNull: null
                     }
+                },
+                Number(req.query.minSurface)
+            ]
+        });
+    }
+    if (req.query.maxSurface) {
+        surfaceConditions.push({
+            $lte: [
+                { 
+                    $convert: {
+                        input: "$$surface",
+                        to: "double",
+                        onError: null,
+                        onNull: null
+                    }
+                },
+                Number(req.query.maxSurface)
+            ]
+        });
+    }
+    filters.$expr = filters.$expr || {};
+    filters.$expr.$and = filters.$expr.$and || [];
+    filters.$expr.$and.push({
+        $anyElementTrue: {
+            $map: {
+                input: "$SURFACE",
+                as: "surface",
+                in: {
+                    $and: surfaceConditions
                 }
             }
-        };
-    }
+        }
+    });
+}
 
     // if (req.query.minPrice) {filters.PRICE = { $gte: Number(req.query.minPrice) };}
     // if (req.query.maxPrice) {filters.PRICE = { ...filters.PRICE, $lte: Number(req.query.maxPrice) };}
 
     // Price filtering
-    if (req.query.minPrice || req.query.maxPrice) {
-        const priceConditions = [];
-        if (req.query.minPrice) {
-            priceConditions.push({
-                $gte: [
-                    { 
-                        $convert: {
-                            input: "$$price",
-                            to: "double",
-                            onError: null,
-                            onNull: null
-                        }
-                    },
-                    Number(req.query.minPrice)
-                ]
-            });
-        }
-        if (req.query.maxPrice) {
-            priceConditions.push({
-                $lte: [
-                    { 
-                        $convert: {
-                            input: "$$price",
-                            to: "double",
-                            onError: null,
-                            onNull: null
-                        }
-                    },
-                    Number(req.query.maxPrice)
-                ]
-            });
-        }
-        filters.$expr = filters.$expr || {};
-        filters.$expr.$and = filters.$expr.$and || [];
-        filters.$expr.$and.push({
-            $anyElementTrue: {
-                $map: {
-                    input: "$PRICE",
-                    as: "price",
-                    in: {
-                        $and: priceConditions
+if (req.query.minPrice || req.query.maxPrice) {
+    const priceConditions = [];
+    if (req.query.minPrice) {
+        priceConditions.push({
+            $gte: [
+                { 
+                    $convert: {
+                        input: "$$price",
+                        to: "double",
+                        onError: null,
+                        onNull: null
                     }
-                }
-            }
+                },
+                Number(req.query.minPrice)
+            ]
         });
     }
+    if (req.query.maxPrice) {
+        priceConditions.push({
+            $lte: [
+                { 
+                    $convert: {
+                        input: "$$price",
+                        to: "double",
+                        onError: null,
+                        onNull: null
+                    }
+                },
+                Number(req.query.maxPrice)
+            ]
+        });
+    }
+    filters.$expr = filters.$expr || {};
+    filters.$expr.$and = filters.$expr.$and || [];
+    filters.$expr.$and.push({
+        $anyElementTrue: {
+            $map: {
+                input: "$PRICE",
+                as: "price",
+                in: {
+                    $and: priceConditions
+                }
+            }
+        }
+    });
+}
       
 
     if (req.query.SaleType) filters.SaleType = req.query.SaleType;
