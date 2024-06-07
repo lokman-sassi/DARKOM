@@ -17,6 +17,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [selectedSaleType, setSelectedSaleType] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedFloor, setSelectedFloor] = useState('');
+  const [selectedRooms, setSelectedRooms] = useState('');
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -29,6 +31,12 @@ function App() {
         if (selectedLocation) {
           url += `&Location=${encodeURIComponent(selectedLocation)}`;
         }
+        if (selectedFloor) {
+          url += `&FLOOR=${selectedFloor}`;
+        }
+        if (selectedRooms) {
+          url += `&ROOMS=${selectedRooms}`;
+        }
         const response = await fetch(url);
         const data = await response.json();
         setListings(data.listings);
@@ -38,11 +46,19 @@ function App() {
         console.error("Error fetching listings:", error);
       }
     };
-    
 
     fetchListings();
-  }, [currentPage, selectedSaleType, selectedLocation]);
+  }, [currentPage, selectedSaleType, selectedLocation, selectedFloor, selectedRooms]);
 
+  const handleFloorChange = (floor) => {
+    setSelectedFloor(floor);
+    setCurrentPage(1); // Reset to the first page when changing floor
+  };
+
+  const handleRoomsChange = (rooms) => {
+    setSelectedRooms(rooms);
+    setCurrentPage(1); // Reset to the first page when changing rooms
+  };
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -52,11 +68,10 @@ function App() {
     setSelectedLocation(location);
     setCurrentPage(1); // Reset to the first page when changing sale type or location
   };
-  
-
-  // const filteredListings = selectedSaleType
-  // ? listings.filter((listing) => listing['SALE TYPE'] && listing['SALE TYPE'].some((type) => type === selectedSaleType))
-  // : listings;
+  const handleLocationChange = (location) => {
+    setSelectedLocation(location);
+    setCurrentPage(1); // Reset to the first page when changing location
+  };
 
   return (
     <Router>
@@ -65,7 +80,11 @@ function App() {
         <Routes>
           <Route path="/" element={
             <>
-              <SearchForm />
+              <SearchForm
+                onFloorChange={handleFloorChange}
+                onRoomsChange={handleRoomsChange}
+                onLocationChange={handleLocationChange}
+              />
               {loading ? (
                 <Center mt="20">
                   <Spinner size="xl" />

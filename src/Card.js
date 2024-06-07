@@ -79,7 +79,7 @@ function CardItem({ listing }) {
         variant='outline'
         minH="300px"
         w="800px"
-        h="300px"
+        h="400px"
         position="relative"
         bg={useColorModeValue('white', 'gray.900')}
         borderRadius="lg"
@@ -133,7 +133,7 @@ function CardItem({ listing }) {
           ) : (
             <Image
               objectFit='cover'
-              boxSize="300px"
+              boxSize="400px"
               src="./no-image.jpg"
               alt='No Image Available'
             />

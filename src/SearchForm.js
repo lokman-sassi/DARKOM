@@ -1,12 +1,20 @@
 // SearchForm.js
-import { useEffect } from 'react';
-import { Flex, Button, Select, useToast, Box, useColorModeValue } from "@chakra-ui/react";
+import { useEffect, useState } from 'react';
+import { Flex, Button, Select, useToast, Box, useColorModeValue, Modal, ModalCloseButton, ModalHeader, ModalOverlay, ModalFooter, ModalBody, ModalContent, Input } from "@chakra-ui/react";
 
-function SearchForm() {
+function SearchForm({ onFloorChange, onRoomsChange, onLocationChange  }) {
   const toast = useToast();
+  const [selectedFloor, setSelectedFloor] = useState('');
+  const [selectedRooms, setSelectedRooms] = useState('');
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [enteredLocation, setEnteredLocation] = useState('');
+
 
   const resetFilters = () => {
     document.getElementById("Form").reset();
+    setSelectedFloor('');
+    setSelectedRooms('');
+    setEnteredLocation('');
     toast({
       title: "Filters reset",
       description: "All filters have been reset to default.",
@@ -19,6 +27,19 @@ function SearchForm() {
   useEffect(() => {
     console.log('SearchForm rendered');
   }, []);
+  const handleFloorChange = (event) => {
+    setSelectedFloor(event.target.value);
+    onFloorChange(event.target.value); // Trigger the fetch operation when the floor changes
+  };
+
+  const handleRoomsChange = (event) => {
+    setSelectedRooms(event.target.value);
+    onRoomsChange(event.target.value); // Trigger the fetch operation when the rooms change
+  };
+  const handleLocationChange = () => {
+    onLocationChange(enteredLocation);
+    setLocationModalOpen(false);
+  };
 
   return (
     <Box
@@ -51,11 +72,47 @@ function SearchForm() {
           <option>Appartement</option>
           <option>Villa</option>
         </Select>
-        <Select placeholder="Location" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md">
-          {/* Add options here */}
-        </Select>
-        <Select placeholder="Floor" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md">
-          {/* Add options here */}
+        <Button
+      colorScheme="teal"
+      onClick={() => setLocationModalOpen(true)}
+      variant="solid"
+      _hover={{
+        bgGradient: 'linear(to-r, teal.500, green.500)',
+        boxShadow: 'xl',
+      }}
+      borderRadius="md"
+    >
+      Location
+    </Button>
+    <Modal isOpen={locationModalOpen} onClose={() => setLocationModalOpen(false)}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Enter a city</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input placeholder="City name" value={enteredLocation} onChange={(event) => setEnteredLocation(event.target.value)} />
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={handleLocationChange}>
+            Apply
+          </Button>
+          <Button variant="ghost" onClick={() => setLocationModalOpen(false)}>Cancel</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+        <Select placeholder="Floor" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md" value={selectedFloor}
+  onChange={handleFloorChange}>
+          <option value="">All</option>
+  {Array.from({ length: 15 }, (_, i) => (
+    <option key={i + 1} value={i + 1}>
+      {i + 1}
+    </option>
+  ))}
+  {Array.from({ length: 7 }, (_, i) => (
+    <option key={`rdc+${i}`} value={`rdc+${i}`}>
+      rdc+{i}
+    </option>
+  ))}
         </Select>
         <Select placeholder="Price" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md">
           {/* Add options here */}
@@ -63,11 +120,14 @@ function SearchForm() {
         <Select placeholder="Surface" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md">
           <option>200 m2</option>
         </Select>
-        <Select placeholder="Rooms" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md">
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+        <Select placeholder="Rooms" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md" value={selectedRooms}
+  onChange={handleRoomsChange}>
+          <option value="">All</option>
+  {Array.from({ length: 10 }, (_, i) => (
+    <option key={i + 1} value={i + 1}>
+      {i + 1}
+    </option>
+  ))}
         </Select>
         <Button
           colorScheme="teal"
