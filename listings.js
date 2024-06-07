@@ -45,7 +45,7 @@ const ListingSchema = new Schema({
     ROOMS: [{
         type: String,
     }], 
-    SALE_TYPE: [{
+    SaleTYPE: [{
         type: String,
     }],   
     SURFACE: [{
