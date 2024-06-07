@@ -19,6 +19,7 @@ function App() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState('');
   const [selectedRooms, setSelectedRooms] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -37,6 +38,9 @@ function App() {
         if (selectedRooms) {
           url += `&ROOMS=${selectedRooms}`;
         }
+        if (selectedCategory) {
+          url += `&CATEGORY=${selectedCategory}`;
+        }
         const response = await fetch(url);
         const data = await response.json();
         setListings(data.listings);
@@ -48,7 +52,7 @@ function App() {
     };
 
     fetchListings();
-  }, [currentPage, selectedSaleType, selectedLocation, selectedFloor, selectedRooms]);
+  }, [currentPage, selectedSaleType, selectedLocation, selectedFloor, selectedRooms, selectedCategory]);
 
   const handleFloorChange = (floor) => {
     setSelectedFloor(floor);
@@ -72,6 +76,10 @@ function App() {
     setSelectedLocation(location);
     setCurrentPage(1); // Reset to the first page when changing location
   };
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setCurrentPage(1); // Reset to the first page when changing category
+  };
 
   return (
     <Router>
@@ -84,6 +92,7 @@ function App() {
                 onFloorChange={handleFloorChange}
                 onRoomsChange={handleRoomsChange}
                 onLocationChange={handleLocationChange}
+                onCategoryChange={handleCategoryChange}
               />
               {loading ? (
                 <Center mt="20">

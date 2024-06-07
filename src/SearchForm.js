@@ -2,12 +2,13 @@
 import { useEffect, useState } from 'react';
 import { Flex, Button, Select, useToast, Box, useColorModeValue, Modal, ModalCloseButton, ModalHeader, ModalOverlay, ModalFooter, ModalBody, ModalContent, Input } from "@chakra-ui/react";
 
-function SearchForm({ onFloorChange, onRoomsChange, onLocationChange  }) {
+function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategoryChange  }) {
   const toast = useToast();
   const [selectedFloor, setSelectedFloor] = useState('');
   const [selectedRooms, setSelectedRooms] = useState('');
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [enteredLocation, setEnteredLocation] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
 
   const resetFilters = () => {
@@ -15,6 +16,7 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange  }) {
     setSelectedFloor('');
     setSelectedRooms('');
     setEnteredLocation('');
+    setSelectedCategory('');
     toast({
       title: "Filters reset",
       description: "All filters have been reset to default.",
@@ -39,6 +41,10 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange  }) {
   const handleLocationChange = () => {
     onLocationChange(enteredLocation);
     setLocationModalOpen(false);
+  };
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+    onCategoryChange(event.target.value);
   };
 
   return (
@@ -66,11 +72,15 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange  }) {
         mx="auto"
         maxWidth="1200px"
         gap={4}
+        value={selectedCategory}
+        onChange={handleCategoryChange}
       >
         <Select placeholder="Category" flex="1" variant="filled" _hover={{ boxShadow: "lg" }} borderRadius="md">
-          <option>Maison</option>
-          <option>Appartement</option>
-          <option>Villa</option>
+          <option value="Appartement">Appartement</option>
+          <option value="Niveau de Villa">Niveau de Villa</option>
+          <option value="Villa">Villa</option>
+          <option value="Duplex">Duplex</option>
+          <option value="Triplex">Triplex</option>
         </Select>
         <Button
       colorScheme="teal"
