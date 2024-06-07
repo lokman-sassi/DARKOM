@@ -25,9 +25,10 @@ export default function Nav({onSaleTypeChange}) {
     };
   }, []);
 
-  const handleSaleTypeClick = (saleType) => {
-    onSaleTypeChange(saleType);
+  const handleSaleTypeClick = (saleType, location) => {
+    onSaleTypeChange(saleType, location);
   };
+  
 
   const logout = () => {
     console.log('Logout function called'); // Add this line
@@ -50,10 +51,10 @@ export default function Nav({onSaleTypeChange}) {
       <Flex h={66} alignItems={'center'} justifyContent={'space-between'}>
         {/* Left-aligned items */}
         <Flex align="center" justify="flex-start" flex="1" flexWrap="wrap">
-          <NavItem label="Vente" onClick={() => handleSaleTypeClick('Vente')}/>
-          <NavItem label="Location" onClick={() => handleSaleTypeClick('Location')}/>
-          <NavItem label="Location Vacances" onClick={() => handleSaleTypeClick('Location Vacances')}/>
-          <NavItem label="Echange" onClick={() => handleSaleTypeClick('Echange')}/>
+          <NavItem label="Vente" onClick={() => handleSaleTypeClick('Vente')} />
+          <NavItem label="Location" onClick={() => handleSaleTypeClick('Location')} />
+          <NavItem label="Location Vacances" onClick={() => handleSaleTypeClick('Location Vacances')} />
+          <NavItem label="Echange" onClick={() => handleSaleTypeClick('Echange')} />
         </Flex>
 
         {/* Center-aligned item */}

@@ -16,12 +16,20 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [selectedSaleType, setSelectedSaleType] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:8000/api/listings?page=${currentPage}`);
+        let url = `http://localhost:8000/api/listings?page=${currentPage}`;
+        if (selectedSaleType) {
+          url += `&SaleType=${selectedSaleType}`;
+        }
+        if (selectedLocation) {
+          url += `&Location=${encodeURIComponent(selectedLocation)}`;
+        }
+        const response = await fetch(url);
         const data = await response.json();
         setListings(data.listings);
         setTotalPages(data.totalPages);
@@ -30,21 +38,25 @@ function App() {
         console.error("Error fetching listings:", error);
       }
     };
+    
 
     fetchListings();
-  }, [currentPage]);
+  }, [currentPage, selectedSaleType, selectedLocation]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const handleSaleTypeChange = (saleType) => {
+  const handleSaleTypeChange = (saleType, location) => {
     setSelectedSaleType(saleType);
+    setSelectedLocation(location);
+    setCurrentPage(1); // Reset to the first page when changing sale type or location
   };
+  
 
-  const filteredListings = selectedSaleType
-  ? listings.filter((listing) => listing['SALE TYPE'] && listing['SALE TYPE'].some((type) => type === selectedSaleType))
-  : listings;
+  // const filteredListings = selectedSaleType
+  // ? listings.filter((listing) => listing['SALE TYPE'] && listing['SALE TYPE'].some((type) => type === selectedSaleType))
+  // : listings;
 
   return (
     <Router>
@@ -60,7 +72,7 @@ function App() {
                 </Center>
               ) : (
                 <>
-                  {filteredListings.map((listing, index) => (
+                  {listings.map((listing, index) => (
                     <CardItem key={index} listing={listing} />
                   ))}
                   <Box mb="20px">
