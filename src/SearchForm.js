@@ -69,6 +69,30 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategory
     onPriceChange({ min: enteredMinPrice, max: enteredMaxPrice });
     setPriceModalOpen(false);
   };
+   
+const getSurfaceLabel = () => {
+   if(enteredMinSurface && enteredMaxSurface) {
+     return`${enteredMinSurface} to ${enteredMaxSurface} m²`;
+   } else if(enteredMinSurface) {
+     return `${enteredMinSurface} m² min`;
+   } else if(enteredMaxSurface) {
+     return `${enteredMaxSurface} m² max`;
+   } else {
+     return 'Surface';
+   }
+ };
+
+ const getPriceLabel = () => {
+  if(enteredMinPrice && enteredMaxPrice) {
+    return`${enteredMinPrice} to ${enteredMaxPrice} DZD`;
+  } else if(enteredMinSurface) {
+    return `${enteredMinPrice} DZD min`;
+  } else if(enteredMaxPrice) {
+    return `${enteredMaxPrice} DZD max`;
+  } else {
+    return 'Price';
+  }
+};
 
   return (
     <Box
@@ -105,6 +129,7 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategory
           value={selectedCategory}
           onChange={handleCategoryChange}
         >
+          {selectedCategory && <option value={selectedCategory}>Category: {selectedCategory}</option>}
           <option value="Appartement">Appartement</option>
           <option value="Niveau de Villa">Niveau de Villa</option>
           <option value="Villa">Villa</option>
@@ -120,9 +145,11 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategory
             boxShadow: 'xl',
           }}
           borderRadius="md"
+          minWidth="10px"
         >
           Location
         </Button>
+        {enteredLocation && <option value={enteredLocation}>Location: {enteredLocation}</option>}
         <Modal isOpen={locationModalOpen} onClose={() => setLocationModalOpen(false)}>
           <ModalOverlay />
           <ModalContent>
@@ -147,7 +174,10 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategory
           borderRadius="md"
           value={selectedFloor}
           onChange={handleFloorChange}
+          maxWidth="150px"
         >
+          <option value="">Floor</option>
+          {selectedFloor && <option value={selectedFloor}>Floor: {selectedFloor}</option>}
           <option value="">All</option>
           {Array.from({ length: 15 }, (_, i) => (
             <option key={i + 1} value={i + 1}>
@@ -168,7 +198,10 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategory
           borderRadius="md"
           value={selectedRooms}
           onChange={handleRoomsChange}
+          maxWidth="150px"
         >
+          <option value="">Rooms</option>
+          {selectedRooms && <option value={selectedRooms}>Rooms: {selectedRooms}</option>}
           <option value="">All</option>
           {Array.from({ length: 10 }, (_, i) => (
             <option key={i + 1} value={i + 1}>
@@ -185,8 +218,9 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategory
             boxShadow: 'xl',
           }}
           borderRadius="md"
+          minWidth="150px"
         >
-          Surface
+          {getSurfaceLabel()}
         </Button>
         <Modal isOpen={surfaceModalOpen} onClose={() => setSurfaceModalOpen(false)}>
           <ModalOverlay />
@@ -214,8 +248,9 @@ function SearchForm({ onFloorChange, onRoomsChange, onLocationChange, onCategory
             boxShadow: 'xl',
           }}
           borderRadius="md"
+          minWidth="150px"
         >
-          Price
+          {getPriceLabel()}
         </Button>
         <Modal isOpen={priceModalOpen} onClose={() => setPriceModalOpen(false)}>
           <ModalOverlay />
